@@ -10,23 +10,26 @@ While developing the SQL for the expiry-date calculation, we identified another 
 Initially, the expiry-date routine was implemented as a user report without an associated layout, these reports can be executed periodically by the Orderwise Task Scheduler. Although this automated the process, it introduced a timing dependency. Some quotes were being issued before the scheduled routine had run, resulting in documents being sent without an expiry date applied. The minimum scheduler interval is 10 minutes, unfortunately this doesn't align with the way users work. Users expected to be able to create and issue a quote immediately, so relying on a scheduled process created an unavoidable window during which the expiry date might not yet have been populated.
 
 
-
-
 ```mermaid
 flowchart TD
-    A[Quote entered into Orderwise]
-    
-    A --> B[Orderwise Task Scheduler]
-    B --> C[Expiry date routine runs]
-    
-    C --> D{order_analysis record exists?}
-    
-    D -->|No| E[Create order_analysis record]
-    D -->|Yes| F[Use existing record]
-    
-    E --> G[Calculate expiry date]
+
+    A[Quote Created]
+
+    subgraph Automation
+        B[Check Analysis Record]
+        C{Record Exists?}
+        D[Create Record]
+        E[Calculate Expiry Date]
+    end
+
+    F[Update Quote]
+    G[Quote Ready]
+
+    A --> B
+    B --> C
+    C -->|No| D
+    C -->|Yes| E
+    D --> E
+    E --> F
     F --> G
-    
-    G --> H[Set expiry date to Order Date + 30 Days]
-    H --> I[Quote ready to issue]
 ```
