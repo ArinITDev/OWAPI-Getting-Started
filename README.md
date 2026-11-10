@@ -18,7 +18,15 @@ The interface also exposes the API Models, allowing developers to inspect the st
 This online documentation should be treated as the primary technical reference when determining the appropriate endpoint, HTTP operation and data model before implementing an OrderWise API call.
 
 ![docs](docs/Images/Overview/WebDocs-Landing-Page.png)
-*Figure 1: OrderWise API documentation landing page.*
+</br>*Figure 1: OrderWise API documentation landing page.*
+
+When you tap on the **Authorize** button the following dialogue is shown
+
+![docs](docs/Images/Overview/authorization-dialogue.png)
+</br>*Figure 2: OrderWise API authorization dialogue.*
+
+This dialogue assumes that you are familiar with REST API calls and tells you how to get a bearer token, if you're not sure what this dialogue is telling you to do, please follow this step by step guide [OWAPI Authorization Guide](docs/owapi-authorization.md). 
+
 ## Quote Expiry Date Automation
 
 As a simple example, we use one of the sales order date analysis fields to record an expiry date for quotes. Initially, our objective was simply to make it clear to customers and prospects exactly when the statement **"quote valid for 30 days"** expired, while also giving us a reliable date for internally reporting when quotes were due to expire.
