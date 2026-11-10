@@ -1,8 +1,24 @@
 # OWAPI-Getting-Started
 ## Getting started with the Orderwise Web API (OWAPI)
 
-When we moved to the Orderwise cloud offering, one of the main trade-offs we had to make was losing much of the automation we had built around our on-premises SQL database. Although this was frustrating from a functionality perspective, it made complete sense from a security standpoint. No responsible software provider would allow untrusted code to run directly within its hosted environment where it could potentially compromise the stability or security of the platform.
+When we moved to the Orderwise cloud offering, one of the main trade-offs we had to make was losing much of the automation we had built around our on-premises SQL database. Although this was frustrating from a functionality perspective, it made complete sense from a security standpoint. Orderwise, like any other responsible software provider doesn't allow untrusted code to run directly within its hosted environment where it could potentially compromise the stability or security of the platform.
 
+Our approach to automation required a rethink. While rebuilding this functionality, we worked through a significant learning curve to understand how best to access and use the **OrderWise Web API (OWAPI)**.
+
+This project is designed to shorten the learning curve and provides a practical guide to accessing the API, authenticating with the OWAPI, and using it as the foundation for future automation projects.
+
+## Introduction
+
+The documentation for the API can be reached at https://<tenant_name>.orderwisecloud.com//OWAPI or https://<tenant_name>.orderwisecloud.com//OWAPI/docs/index
+
+This provides an interactive reference for the OrderWise REST API available through the organisation's OrderWise Cloud environment. The API uses HTTPS and exposes functionality across the principal areas of the OrderWise platform grouping endpoints into functional areas.
+
+The interface also exposes the API Models, allowing developers to inspect the structures used for request and response payloads.
+
+This online documentation should be treated as the primary technical reference when determining the appropriate endpoint, HTTP operation and data model before implementing an OrderWise API call.
+
+![docs](docs/Images/Overview/WebDocs-Landing-Page.png)
+*Figure 1: OrderWise API documentation landing page.*
 ## Quote Expiry Date Automation
 
 As a simple example, we use one of the sales order date analysis fields to record an expiry date for quotes. Initially, our objective was simply to make it clear to customers and prospects exactly when the statement **"quote valid for 30 days"** expired, while also giving us a reliable date for internally reporting when quotes were due to expire.
