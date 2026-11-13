@@ -21,7 +21,7 @@ $Headers = @{
 # The OrderWise API Export Definition that we want to execute.
 # This ID corresponds to the specific Export Definition in OrderWise that we want to execute
 # defined in eCommerce > API Export Definitions as the [Export definition ID]
-$APIExpDefID = 96
+$APIExpDefID = 98
 
 $Uri = "https://arinsdale.orderwisecloud.com/OWAPI/system/export-definition/$APIExpDefID"
 
@@ -73,20 +73,21 @@ $Resp = Invoke-WebRequest `
     -UseBasicParsing
 
 # ------------------------------------------------------------
-# SQL executed on host
-#
-# SELECT
-#       c.c_currency_code
-#     , c_exchange_rate
-#     , c_currency_symbol
-#     , c_last_amended_datetime
-#     , ud_username
-# FROM dbo.currency AS c
-#     INNER JOIN user_detail ON ud_id = c_last_amended_by_user_id
-# WHERE c.c_currency_code IN (
-#     SELECT LTRIM(RTRIM(value))
-#     FROM STRING_SPLIT(@currency_codes, ',')
-# );
+<# SQL executed on host
+
+SELECT
+       c_currency_code
+     , c_exchange_rate
+     , c_currency_symbol
+     , c_last_amended_datetime
+     , ud_username
+FROM currency
+     INNER JOIN user_detail ON ud_id = c_last_amended_by_user_id
+WHERE c_currency_code IN (
+     SELECT LTRIM(RTRIM(value))
+     FROM STRING_SPLIT(@currency_codes, ',')
+);
+#>
 # ------------------------------------------------------------
 
 

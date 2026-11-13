@@ -21,7 +21,7 @@ $Headers = @{
 # The OrderWise API Export Definition that we want to execute.
 # This ID corresponds to the specific Export Definition in OrderWise that we want to execute
 # defined in eCommerce > API Export Definitions as the [Export definition ID]
-$APIExpDefID = 96
+$APIExpDefID = 99
 
 $Uri = "https://arinsdale.orderwisecloud.com/OWAPI/system/export-definition/$APIExpDefID"
 
@@ -58,7 +58,6 @@ $Body = ConvertTo-Json -InputObject @($Parameters) -Depth 5 -Compress
 Write-Host "POST $Uri"
 Write-Host $Body
 
-
 # ------------------------------------------------------------
 # Send the request to OrderWise.
 # ------------------------------------------------------------
@@ -73,22 +72,20 @@ $Resp = Invoke-WebRequest `
     -UseBasicParsing
 
 # ------------------------------------------------------------
-# SQL executed on host
-#
-# SELECT
-#       c.c_currency_code
-#     , c_exchange_rate
-#     , c_currency_symbol
-#     , c_last_amended_datetime
-#     , ud_username
-# FROM dbo.currency AS c
-#     INNER JOIN user_detail ON ud_id = c_last_amended_by_user_id
-# WHERE c.c_currency_code IN (
-#     SELECT LTRIM(RTRIM(value))
-#     FROM STRING_SPLIT(@currency_codes, ',')
-# );
-# ------------------------------------------------------------
+<# SQL executed on host
 
+SELECT
+ 	  cd_id
+ 	, cd_ow_account
+ 	, cd_statement_name
+ 	, ca_n_1
+ 	, ca_n_2
+ 	, ca_n_3
+ 	, ca_n_4
+FROM customer_detail LEFT JOIN customer_analysis ON ca_customer_id = cd_id
+WHERE cd_id = @cd_id
+#>
+# ------------------------------------------------------------
 
 # ------------------------------------------------------------
 # OrderWise returns JSON.
@@ -99,16 +96,24 @@ $data = $Resp.Content | ConvertFrom-Json -ErrorAction Stop
 # ------------------------------------------------------------
 # Display the results returned by the Export Definition.
 # ------------------------------------------------------------
-$data | Format-Table -AutoSize
+$data | Format-Table `
+    cd_id,
+    cd_ow_account,
+    cd_statement_name,
+    @{L='ca_n_1'; E={'{0:F4}' -f $_.ca_n_1}},
+    @{L='ca_n_2'; E={'{0:F4}' -f $_.ca_n_2}},
+    @{L='ca_n_3'; E={'{0:F4}' -f $_.ca_n_3}},
+    @{L='ca_n_4'; E={'{0:F4}' -f $_.ca_n_4}} `
+    -AutoSize |
+    Out-Host
 
-Write-Host
 
 <# Program Output
-POST https://arinsdale.orderwisecloud.com/OWAPI/system/export-definition/96
+POST https://arinsdale.orderwisecloud.com/OWAPI/system/export-definition/99
 [{"value":3115,"name":"@cd_id"}]
 
-cd_id cd_ow_account cd_statement_name ca_n_1 ca_n_2 ca_n_3 ca_n_4
------ ------------- ----------------- ------ ------ ------ ------
- 3115 TEST          Used for testing   22.00  33.00   0.00 
+cd_id cd_ow_account cd_statement_name ca_n_1 ca_n_2 ca_n_3  ca_n_4
+----- ------------- ----------------- ------ ------ ------  ------
+ 3115 TEST          Used for testing  8.9444 1.1930 13.2475 1.3396
 
 #>

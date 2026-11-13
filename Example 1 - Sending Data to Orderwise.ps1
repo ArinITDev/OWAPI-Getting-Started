@@ -72,7 +72,6 @@ $Body = $Parameters | ConvertTo-Json -Depth 5 -Compress
 Write-Host "POST $Uri"
 Write-Host $Body
 
-
 # ------------------------------------------------------------
 # Send the request to OrderWise.
 # ------------------------------------------------------------
@@ -87,15 +86,15 @@ $Resp = Invoke-WebRequest `
     -UseBasicParsing
 
 # ------------------------------------------------------------
-# SQL executed on host
-#
-# SELECT 
-#     @CNY AS CNY
-#   , @EUR AS EUR
-#   , @SEK AS SEK
-#   , @USD AS USD
-# ------------------------------------------------------------
+<# SQL executed on host
 
+SELECT 
+     @CNY AS CNY
+   , @EUR AS EUR
+   , @SEK AS SEK
+   , @USD AS USD
+#>
+# ------------------------------------------------------------
 
 # ------------------------------------------------------------
 # OrderWise returns JSON.
@@ -106,7 +105,12 @@ $data = $Resp.Content | ConvertFrom-Json -ErrorAction Stop
 # ------------------------------------------------------------
 # Display the results returned by the Export Definition.
 # ------------------------------------------------------------
-$data | Out-Host
+$data | Format-Table `
+    @{L='CNY'; E={'{0:F4}' -f $_.CNY}},
+    @{L='EUR'; E={'{0:F4}' -f $_.EUR}},
+    @{L='SEK'; E={'{0:F4}' -f $_.SEK}},
+    @{L='USD'; E={'{0:F4}' -f $_.USD}} |
+    Out-Host
 
 # ------------------------------------------------------------
 # One of the main benefits of ConvertFrom-Json is that returned
@@ -122,14 +126,13 @@ Write-Host
 POST https://arinsdale.orderwisecloud.com/OWAPI/system/export-definition/96
 [{"value":8.9444,"name":"@CNY"},{"value":1.193,"name":"@EUR"},{"value":13.2475,"name":"@SEK"},{"value":1.3396,"name":"@USD"}]
 
-CNY: 8.9444
-EUR: 1.193
-SEK: 13.2475
-USD: 1.3396
+CNY    EUR    SEK     USD
+---    ---    ---     ---
+8.9444 1.1930 13.2475 1.3396
 
-"Yuan rate: 8.9444"
-"Euro rate: 1.193"
-"Swedish Krona rate: 13.2475"
-"US Dollar rate: 1.3396"
+Yuan rate: 8.9444
+Euro rate: 1.193
+Swedish Krona rate: 13.2475
+US Dollar rate: 1.3396
 
 #>
